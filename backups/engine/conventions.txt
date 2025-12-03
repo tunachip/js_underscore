@@ -1,0 +1,57 @@
+kitten = Object
+kittens = Array
+kittenNames = Arroy[Str]
+get_kittens = func => Array[Object]
+hasKittens = bool
+
+const items = [
+	"one",
+	"two",
+	"three"
+]
+
+resources
+
+watch/read:
+	- You Don't Know JS Series
+	- 
+
+learn about:
+	- promises (async)
+	- event loop 
+	- clojures/currying/hoisting (functional concepts)
+	- prototype chains
+
+
+reaction to JS Lesson Notes:
+
+**Concepts explained in the video, and what I would expect an interview candidate to know:**
+	* **Closure**
+	You should intuitively know what this is, but may not know the word for it or how to describe it.
+	
+	* **Currying**
+	You should know this is possible, but may not have used it much.
+	
+	* **Hoisting**
+	This rarely ever comes up, you should be writing your code so that hoisting shouldn't matter.
+	
+	* **Callbacks vs Promises**
+	You should know callbacks and be able to explain Promises and async/await, though you don't have to feel comfortable with them.
+	
+	* **`this` keyword**
+	Rarely comes up, and also is commonly abused by libraries for magic (See: jQuery, Vue, etc). I care that you can use it from a practical standpoint more than if you can explain it.
+	
+	* **`.bind`**
+	I haven't had to use a bind since 2015, I'd be impressed if you knew what they were for, but it's not very useful knowledge
+	
+	* **Prototype chains**
+	All you need to know is you shouldn't be using them, the more you can explain why, the better, but if all you know is to avoid them, that's good enough.
+
+**Things I'd want to know about your JS knowledge that are not covered:**
+	* When is JS code single threaded vs multi-threaded? Give examples.
+	* JS has a loop thingy that controls when code executes, what's that all about?
+	* What are some differences between JS in Firefox and JS in Node?
+	* What is something you would add into JavaScript? (This is a trap, if you mention types, you will not get this right)
+	* Name some JS features added after 2017.
+	* What are some reasons people avoid using Classes in JavaScript?
+	* What do you put at the end of your google search to get the correct answer?

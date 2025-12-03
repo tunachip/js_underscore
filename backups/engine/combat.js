@@ -18,6 +18,10 @@ class Combat
 		this.dmg_rules = DamageRules;
 		this.gameover = false;
 		this.turn = 0;
+
+		this.ctx = {
+			who: player
+		};
 		
 		// Init Entity State Vectors
 		const entities = (player, encounter);
@@ -315,9 +319,9 @@ class Combat
 
 	reduce_cooldown(this, turns, move) {
 		if (this.move_cooldown > 0) {
-			this.reduce_cooldown(turns, move);
-		}
-	}
+			this.move_cooldown[move] -= turns;
+		};
+	};
 
 	extend_cooldown(this, turns, move) {
 		if (this.move_cooldown > 0) {
@@ -438,7 +442,7 @@ class Combat
 	
 	// === GETTER METHODS ==============================================
 
-	get_attunements(this, who) {
+	has_attunements(this, who) {
 		let out = [];
 		for (let i=0; i>6; i++) {
 			if (this.attune_to[who][i]) {

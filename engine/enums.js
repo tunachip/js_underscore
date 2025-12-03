@@ -1,51 +1,64 @@
-// ====================================
-//	engine/enums.js
-//
-//
-// ====================================
+export const Elements = [
+	"water",
+	"stone",
+	"fire",
+	"plant",
+	"vital",
+	"force",
+	"thunder",
+];
 
-export const Element = Object.freeze({
-	WATER:		0,
-	STONE:		1,
-	FIRE:			2,
-	PLANT:		3,
-	VITAL:		4,
-	FORCE:		5,
-	THUNDER:	6,
-});
+export const Statuses = [
+	"burn",
+  "decay",
+  "wound",
+  "regen",
+  "curse",
+  "quick",
+  "slow",
+  "strong",
+  "tough",
+  "stun",
+  "anger",
+  "sleep",
+]
 
-export const Status = Object.freeze({
-	BURN:			0,
-  DECAY:		1,
-  WOUND:		2,
-  REGEN:		3,
-  CURSE:		4,
-  QUICK:		5,
-  SLOW:			6,
-  STRONG:		7,
-  TOUGH:		8,
-  STUN:			9,
-  ANGER:	 10,
-  SLEEP:	 11,
-});
+export const Absorbed		= (heal=1) => ({ type: "Absorbed", heal })
+export const Calculated = (damage) => ({ type: "Calculated", damage })
+export const Blocked		= ()			 => ({ type: "Blocked" })
 
-export const Zone = Object.freeze({
-	ACTIVE:		0,
-	BANKED:		1,
-});
+const key = (a,b) => `${a}|${b}`
 
-export const MoveType = Object.freeze({
-	ATTACK:		0,
-	UTILITY:	1,
-});
-
-export const MoveSpeed = Object.freeze({
-	SLOW:			0,
-	NORMAL:		1,
-	QUICK:		2,
-});
-
-export const Entity = Object.freeze({
-	PLAYER:		0,
-	ENEMY:		1,
-});
+export const DamageRules = {
+//[key(DamageElement, TargetAttunement)]: [Effect(Args)]
+	// -- Water ------------------------------------------------
+	[key("fire",		"water")]:	[Blocked()],
+	[key("stone",		"water")]:	[Calculated(-1)],
+	[key("plant",		"water")]:	[Calculated(+1)],
+	[key("thunder",	"water")]:	[Calculated(+1)],
+	// -- Stone ------------------------------------------------
+	[key("water",		"stone")]:	[Calculated(+1)],
+	[key("fire",		"stone")]:	[Calculated(-1)],
+	[key("force",		"stone")]:	[Calculated(+1)],
+	[key("thunder",	"stone")]:	[Blocked()],
+	// -- Fire -------------------------------------------------
+	[key("water",		"fire")]:		[Calculated(+1)],
+	[key("stone",		"fire")]:		[Calculated(+1)],
+	[key("plant",		"fire")]:		[Blocked()],
+	// -- Plant ------------------------------------------------
+	[key("water",		"plant")]:	[Absorbed()],
+	[key("fire",		"plant")]:	[Calculated(+1)],
+	[key("vital",		"plant")]:	[Calculated(+1)],
+	// -- Vital ------------------------------------------------
+	[key("plant",		"vital")]:	[Calculated(-1)],
+	[key("vital",		"vital")]:  [Calculated(+1)],
+	[key("force",		"vital")]:  [Calculated(+1)],
+	// -- Force ------------------------------------------------
+	[key("stone",		"force")]:	[Blocked()],
+	[key("vital",		"force")]:	[Calculated(-1)],
+	[key("thunder",	"force")]:	[Calculated(+1)],
+	// -- Thunder ----------------------------------------------
+	[key("water",	"thunder")]:	[Calculated(-1)],
+	[key("stone",	"thunder")]:	[Calculated(-1)],
+	[key("force",	"thunder")]:	[Blocked()],
+};

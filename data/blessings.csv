@@ -16,6 +16,7 @@ cultural,Copper Anklet,Thunder,nomad,Init: AttuneTo Thunder. When Anyone Attunes
 cultural,Windcap,Force,nomad,Init: AttuneTo Force. When Anyone Attunes to Force: gain 1 energy.
 cultural,Static Codex,Thunder,nomad,Player may ignore the effects of the first Bound Move each round.
 cultural,Famine Ledger,Force,nomad,On Start of Each Turn: Players each gain 1 turn of a random status.
+cultural,...,Thunder,nomad,On Enter Shop: The first Purchase you make costs 1/2 price rounded down
 -------------,<<  Bastard  >>,-------,---------,Rules: Bastard Blessings should be either Items for Ritual Violence or Repurposed Flesh
 cultural,Ceremonial Dagger,Vital,bastard,When 'Open-Wounds' Triggers: set HP to MaxHP
 cultural,Bloodshot Eye,Vital,bastard,Init: AttuneTo Vital. When Anyone Attunes to Vital: Gain IgnoreSleep
@@ -26,39 +27,39 @@ cultural,Nomad's Scalp,Vital,bastard,At start of match: if Enemy is Nomad: Apply
 [  ANCIENT  ],==================,========,=========,============================================================================================================
 -------------,<< water >>,,,
 ancient,,Water,common,At start of match: Target Player Attunes to Water
-ancient,,Water,common,At start of match: Change the Element of any move to an Element of your Choice
+ancient,,Water,common,On Match Start: Self Attunes to Water
 ancient,,Water,common,On TickStatus: If Status Turns Left == 0: Reduce Any Status 1 Turn [cooldown 1]
 ancient,,Water,common,On Bank Move: If MoveType == Utility: Gain 1 Energy
 ...,,,,
 ancient,,Water,uncommon,On DealDamage: If DamageElement == Water: Target Loses all Status Effects [Cooldown 3]
 ancient,,Water,uncommon,On TickAttunements: If Attuned to > 2 Elements: Thaw One Move [cooldown 1]
 ancient,,Water,uncommon,On Use Shop Ability "Research": Find 1 Additional Upgrade Option
-ancient,,Water,uncommon,
+ancient,,Water,uncommon,On TickStatus: If Status==0 after Tickdown: Declare Element from self.attunedTo: water-no effect. stone-Gain 1 tough. fire-gain 1 energy. plant-gain 1 regen. vital-gain 1 strong. force-extend any 1 status. thunder-gain 1 quick.
 ...,,,,
 ancient,,Water,rare,On Calculate Damage: Base Damage += X where X is number of banked moves of Shared Element.
-ancient,,Water,rare,
-ancient,,Water,rare,
-ancient,,Water,rare,
+ancient,,Water,rare,Init X = 0. On DealDamage: If Damage Element is Unique from Damage in List: X += 1; List += Element. else: X = 0; List.empty; Damage += X. 
+ancient,,Water,rare,On Turn Start: X = # of Non-Water Statuses Attuned To. For up to X moves: Extend Cooldown 1 or Reduce Cooldown 1 or Y += 1 [cooldown X - Y]
+ancient,,Water,rare,On TickBlessing: If Blessing Element includes Water and Cooldown == 0 after TickDown: Thaw Target Move
 -------------,<< stone >>,,,
 ancient,,Stone,common,Start of Turn: Gain 1 Tough. [Charge 3]
 ancient,non-newtonian,Stone,common,On Hurt: If Self has Tough: Gain 1 Tough
 ancient,,Stone,common,On Match Start: Enemy Random Active Action Move == Slow
-ancient,,Stone,common,
+ancient,,Stone,common,On CalculateDamage: If Damage Element == Stone and Speed == Slow: Damage += 1
 ...,,,,
 ancient,,Stone,uncommon,On UnbankMove: If only one move has been unbanked this turn: Unbank any move
 ancient,,Stone,uncommon,On AttuneTo: If Turn Number > 5 and Element == Stone: Apply 2 Slow to Target
-ancient,,Stone,uncommon,On Hurt: If Target.AttunedTo != Stone: Deal 1 Stone Damage to Target
-ancient,,Stone,uncommon,
+ancient,,Stone,uncommon,On Hurt: If Attacker.AttunedTo != Stone: Deal 1 Stone Damage to Attacker
+ancient,,Stone,uncommon,On Hurt: If Target Attuned to Water: Target Gains 3 Slow [cooldown permanent]
 ...,,,,
 ancient,,Stone,rare,On ExecuteTurn: If Turn Number == 4 or 8 or 16: Iters += 1 / 2 / 4
-ancient,,Stone,rare,
-ancient,,Stone,rare,
-ancient,,Stone,rare,
+ancient,,Stone,rare,Init X = 0. On Turn End: If Move was not Attack: X += 1. If Move was Attack: Deal X Stone Damage to Target then [cooldown permanent]
+ancient,,Stone,rare,Active While Attuned to Stone: Self Tough Limit is 100. On NegateAttune to Stone: Self Tough = 0
+ancient,,Stone,rare,On Choose Move: Player May Skip Turn to Negate All Self Cooldowns (moves and blessings); if used: [cooldown permanent]
 -------------,<< fire >>,,,
 ancient,,Fire,common,On ApplyStatus Burn: If self has burn: Reduce Self Burn 1.
 ancient,,Fire,common,On Hurt: If Damage > 2: Apply 1 Burn to Attacker
 ancient,,Fire,common,On Match Start: Apply 1 Burn to Target
-ancient,,Fire,common,
+ancient,,Fire,common,On Enter Shop: 1 Random Option costs Half Essence / Another Random Option costs Double
 ...,,,,
 ancient,,Fire,uncommon,On Set Random Value: Random Value += 1
 ancient,,Fire,uncommon,When Anyone Gains Burn: Apply 1 Sleep to Burnt Entity. [Cooldown Permanent]
@@ -68,27 +69,27 @@ ancient,,Fire,uncommon,On Use Shop Ability 'Kindle': Gain 2 Essence.
 ancient,,Fire,rare,On StartTurn: if Self has Burn: Apply 1 Burn to all Enemies.
 ancient,,Fire,rare,On Overheat: Negate all Bound Moves. Negate All Cooldown on your Moves.
 ancient,,Fire,rare,On NegateAttune: Apply IgnoreAttune to Target. [cooldown permanent]
-ancient,,Fire,rare,
+ancient,,Fire,rare,On Burnout: Permanently Raise your Max Burn by 1 (Persists past Combat)
 -------------,<< plant >>,,,
 ancient,,Plant,common,On Heal: Heal += 1 [Cooldown 1]
 ancient,,Plant,common,On Match Start: Apply 3 Regen to Self
-ancient,,Plant,common,
-ancient,,Plant,common,
+ancient,,Plant,common,On Match Start: Target Player Attunes to Plant
+ancient,,Plant,common,On Apply Status: If Status == Regen: Turns += 1
 ...,,,,
 ancient,,Plant,uncommon,On Enemy Attunement is Negated: Attune to Negated Element (Optional)
 ancient,,Plant,uncommon,On DealDamage: If Damage is Plant and Target is not Attuned to Plant: Attune Target to Plant
 ancient,,Plant,uncommon,On AttuneTo: If Element==Water: Lose Attunement to Water and Apply 1 Strong
-ancient,,Plant,uncommon,
+ancient,,Plant,uncommon,On Turn Start: Enemy Loses 1 Energy. For each Energy lost this way: Gain 1 Energy
 ...,,,,
 ancient,,Plant,rare,On Match Start: X = Declare Element. On Entity AttunesTo X: Deals Y Damage where Y == Current Turn
-ancient,,Plant,rare,
-ancient,,Plant,rare,
-ancient,,Plant,rare,
+ancient,,Plant,rare,On Overgrowth: Apply 1 Sleep to Opponent [charges 1]
+ancient,,Plant,rare,On Match Start: Self Max Regen += 5
+ancient,,Plant,rare,On Weather Event: Self Regen = 5
 -------------,<< vital >>,,,
 ancient,,Vital,common,On DealDamage: Heal X where X == Damage Dealt. [Cooldown Infinite]
 ancient,,Vital,common,On ApplyStatus: if Status == Wound: Turns += 1
 ancient,,Vital,common,On Match Start: Take 3 Damage. MaxHP += 3
-ancient,,Vital,common,
+ancient,,Vital,common,On Match Start: Pick Enemy Card. Declare Element. On Move Revealed: if Move is Declared Element: Deal 3 Vital Damage to Target.
 ...,,,,
 ancient,,Vital,uncommon,On Trigger Blessing: You may Ignore Blessing Effect. If you do: Gain 1 Energy.
 ancient,,Vital,uncommon,OpenWounds Deals Damage to All Players
@@ -97,166 +98,230 @@ ancient,,Vital,uncommon,On Skipped Turn: Gain 2 Strong.
 ...,,,,
 ancient,,Vital,rare,On DealDamage: If Attuned to Vital and No Other Element: Base Damage += 2
 ancient,,Vital,rare,On TurnStart: X = RandVal(2-6). If X <= Self.Energy: Spend all Energy. This Turn Your Attacks Deal Double Damage
-ancient,,Vital,rare,
-ancient,,Vital,rare,
+ancient,,Vital,rare,On Match Start: Player and Enemy Privately Declare Random Ints (X/Y respectively); On Start Turn: If Turn # == X: This Turn Player Deals Double Damage. If Turn Y: Player Skips Turn
+ancient,,Vital,rare,On Hurt: If Self has Sleep: Negate Any Non-Status Damage
 -------------,<< force >>,,,
 ancient,,Force,common,Start of Match: Gain 1 Turn of Random Status Effect.
 ancient,,Force,common,On PrivatizeMove: Reprivatized Moves you have Seen Before are Marked as 'Seen'
-ancient,,Force,common,
-ancient,,Force,common,
+ancient,,Force,common,Start of Match: Peek at One Hidden Move
+ancient,,Force,common,On Hurt: Apply 1 Curse Chance to Attacker
 ...,,,,
 ancient,,Force,uncommon,While Cursed: On DealDamage: Apply 1 CurseChance to Target
 ancient,,Force,uncommon,On ApplyStatus: If Status is not Sleep/Stun/Anger: Apply 1 Additional Turn of Status. [cooldown 2]
 ancient,,Force,uncommon,On Use Shop Ability "Recover": You may Reroll the Recovered Blessing 1 Time
-ancient,,Force,uncommon,
+ancient,,Force,uncommon,End of Turn: Players Gain 1 Curse Chance for Each Move they have Private [cooldown 2]
 ...,,,,
 ancient,,Force,rare,Start of Match: If Self has fewer moves than Opponent: Fill slot with a Copy of a Random Move Opp has.
 ancient,,Force,rare,While Cursed: Immune to Status Effects other than Curse.
-ancient,,Force,rare,
-ancient,,Force,rare,
+ancient,,Force,rare,On Hurt: If self has not Attacked: Until end of Match all Force Damage Triggers 'Attempt Curse'
+ancient,,Force,rare,On TurnStart: If Self Cursed: Player may extend Curse. If Player Does: Target CurseChance += 5. Then Enemy Roll Curse
 -------------,<< thunder >>,,,
 ancient,,Thunder,common,On GainStatus Quick: Negate self Status Stun. [Cooldown Permanent]
 ancient,,Thunder,common,On Match Start: One Random Active Move Speed == Quick
 ancient,,Thunder,common,On Hurt: If Damage Element == Thunder: Deal 2 Thunder Damage to Attacker.
-ancient,,Thunder,common,
+ancient,,Thunder,common,On Match Start: If Weather Element == Thunder: Apply 1 Stun to Enemy
 ...,,,,
 ancient,,Thunder,uncommon,All Moves are QuickMoves. On Skip Turn: [Cooldown Permanent]
 ancient,,Thunder,uncommon,On Spend Energy: If Overspend: Gain Overspent Energy Back
-ancient,,Thunder,uncommon,
-ancient,,Thunder,uncommon,
+ancient,,Thunder,uncommon,On Match Start: If Environment is not Thunder: Reshuffle Environment and draw with a 50% chance of thunder
+ancient,,Thunder,uncommon,On Match Start: Self Gains 2 Quick
 ...,,,,
 ancient,,Thunder,rare,On DealDamage: If Turn Number == fibonacci Value: Base += sequence interval (1 = 1; 3 = 2; 5 = 3; 8 = 4; etc.)
 ancient,,Thunder,rare,At Match Start: X = Private RandVal(1-5). On Hurt: If CalculatedDamage == X: Deal X Thunder DMG to Attacker
 ancient,Punish Diversity,Thunder,rare,On DealDamage: If Self Elements AttunedTo < Target Elements AttunedTo: Deal += Delta
-ancient,,Thunder,rare,
+ancient,Set the Bar,Thunder,rare,Init X: On Hurt or Deal Damage: If Damage > X then X = Damage. Else: Damage = X
 -------------,,,,
 [ RECOVERED ],==================,========,=========,============================================================================================================
 -------------,<< water >>,,,
-recovered,,Water,common,
-recovered,,Water,common,
-recovered,,Water,common,
-recovered,,Water,common,
+recovered,,Water,common,On Apply Cooldown: Reduce Cooldown on any other move by 1
+recovered,,Water,common,On Enter Shop: You may downgrade any Move in the Shop or on Self to gain 1 essence
+recovered,,Water,common,On Turn Start: if self has no Statuses: Reduce all moves on cooldown by 1 [cooldown 3]
+recovered,,Water,common,On Hurt: Reduce any Status by 1 [charges 5]
 ...,,,,
 recovered,,Water,uncommon,On ApplyCooldown: Deal X Water Damage to Target where X == # of Self Moves on Cooldown
-recovered,,Water,uncommon,
-recovered,,Water,uncommon,
-recovered,,Water,uncommon,
+recovered,,Water,uncommon,On AttuneTo Non-Water Element: Thaw One Water Move
+recovered,,Water,uncommon,At start of match: Change the Element of any move to an Element of your Choice
+recovered,,Water,uncommon,On Self Move Targetted: Negate Effect of Move Target [charges 2]
 ...,,,,
 recovered,,Water,rare,While Self AttunedTo > 4 Elements: Ignore Non-Water Damage
-recovered,,Water,rare,
-recovered,,Water,rare,
-recovered,,Water,rare,
+recovered,,Water,rare,On Turn Start: You may rearrange your moves across zones. If you do: [cooldown permanent]
+recovered,,Water,rare,On Match Start: Upgrade 1 Move until Start of Next Match
+recovered,,Water,rare,On End of Turn: You may put one Self Move not on cooldown on Permanent Cooldown: If you do: Attune to Move's Element
 -------------,<< stone >>,,,
-recovered,,Stone,common,
-recovered,,Stone,common,
-recovered,,Stone,common,
-recovered,,Stone,common,
+recovered,,Stone,common,On DealDamage: If 10th Time Dealing Damage: Reduce all self cooldowns by 2
+recovered,,Stone,common,On Turn Start: If you have a move on cooldown: you may Extend Cooldown on that move. If you do: Gain 1 Tough.
+recovered,,Stone,common,On Hurt: If Damage > 1: Gain 1 Tough. [Charges 3]
+recovered,,Stone,common,On Start Turn: If Self Not Tough: Self Gains Tough [cooldown 3]
 ...,,,,
 recovered,,Stone,uncommon,While Slow: You may Cast Moves from Bank as if they were Active
-recovered,,Stone,uncommon,
-recovered,,Stone,uncommon,
-recovered,,Stone,uncommon,
+recovered,,Stone,uncommon,On End of Turn: If Turns Since Attack > 3: Next Turn Iters += 1
+recovered,Against Goliath,Stone,uncommon,On Match Start: If Enemy == Elite: Enemy HP -= 20%
+recovered,,Stone,uncommon,On Turn End: If Self has Moves on Cooldown: Self Gain 1 Tough
 ...,,,,
 recovered,,Stone,rare,On ExecuteOp: If MoveElement is Stone and MoveType is Attack: 'Base' and 'Times' Swap Values
 recovered,,Stone,rare,On Opponent ExecuteTurn: If Self has Slow: You may Copy Opponent's Move til end of Match. If you do push one move to Bank and Create a copy of it. [cooldown Permanent]
-recovered,,Stone,rare,
-recovered,,Stone,rare,
+recovered,,Stone,rare,On Start Turn: If Times Dealing Damage > 9: DamageDealt this turn is Doubled [cooldown permanent]
+recovered,Atlus Shrugs,Stone,rare,On End Turn: If Self Active Moves on Cooldown > 3: Deal 10 Stone Damage to Enemy [Cooldown 3]
 -------------,<< fire >>,,,
-recovered,,Fire,common,
-recovered,,Fire,common,
-recovered,,Fire,common,
-recovered,,Fire,common,
+recovered,,Fire,common,On ExecuteTurn: If MoveChoice Matches last turn: Base DMG += 1
+recovered,,Fire,common,On Enemy Attunes: If # of Attunements > 2: Deal X Damage where x == #
+recovered,,Fire,common,On Turn Start: If you have Burn: You gain Gain 1 Burn. If you do: Gain 1 Strong.
+recovered,,Fire,common,On Tick Burn: If Damage > 0: Reduce All Cooldowns by 1 (blessings Included)
 ...,,,,
 recovered,,Fire,uncommon,While Anger: Immune to Sleep and Stun.
-recovered,,Fire,uncommon,
-recovered,,Fire,uncommon,
-recovered,,Fire,uncommon,
+recovered,,Fire,uncommon,On CalculateDamage: Base += 4 [cooldown permanent]
+recovered,,Fire,uncommon,On Enter Shop: You may Unlearn Move to Use Shop Ability 2 Times
+recovered,,Fire,uncommon,Self MaxEnergy += 2
 ...,,,,
 recovered,,Fire,rare,On DeclareVariable: Make 2 Declarations- Both Values Apply.
 recovered,,Fire,rare,While Anger: Player Ignores Sleep and may cast moves on cooldown as if they were not on Cooldown.
-recovered,,Fire,rare,
-recovered,,Fire,rare,
+recovered,,Fire,rare,At Start of Turn: Apply 1 Strong to All Players
+recovered,,Fire,rare,On Turn Start: Pay Any Non-Fire Attunement: if you do: Enemy Pays 1 Non-Fire Attunement
 -------------,<< plant >>,,,
 recovered,,Plant,common,On GainStatus that is not Regen: If Self has Regen: Gain 1 Regen
 recovered,,Plant,common,On Hurt: If Damage ELement was not Fire/Vital: Deal 1 Damage to Attacker [Charges: 3]
-recovered,,Plant,common,
-recovered,,Plant,common,
+recovered,,Plant,common,On Turn Start: If Turn # == 1/2/3: Heal X where X == Turn Number
+recovered,,Plant,common,On Turn End: If self.Attuned to Plant: Gain 1 Regen [cooldown 3]
 ...,,,,
 recovered,,Plant,uncommon,On Enemy Heal: If Self has Burn: Heal X where X == Enemy's Heal Value
-recovered,,Plant,uncommon,
-recovered,,Plant,uncommon,
-recovered,,Plant,uncommon,
+recovered,,Plant,uncommon,On Turn Start: If Turn # % 3 == 0: Gain 1 Energy
+recovered,,Plant,uncommon,On Hurt: If HP < 50% MaxHP: End Current Turn and Apply 1 Sleep to self [cooldown permanent]
+recovered,,Plant,uncommon,On Skipped Turn: Declare Move Privately. [cooldown 3]. While on Cooldown: On CheckDisqualifiers: If Move==Declared: Player Skips Turn.
 ...,,,,
 recovered,,Plant,rare,On UnbindMove: Declare Non-Public Move: Bind Declared Move.
-recovered,,Plant,rare,
-recovered,,Plant,rare,
-recovered,,Plant,rare,
+recovered,,Plant,rare,On EndOfTurn: If Turns Attuned to Plant > 5: Permanently Upgrade Max_HP by 1
+recovered,,Plant,rare,On Hurt: X = Damage Element [cooldown 1] While on cooldown: Damage of element X = 1
+recovered,,Plant,rare,On End of Turn: X = Turns attuned to Plant: Self Gain X Regen. If Over-Applied: [cooldown permanent]
 -------------,<< vital >>,,,
-recovered,,Vital,common,
-recovered,,Vital,common,
-recovered,,Vital,common,
-recovered,,Vital,common,
+recovered,,Vital,common,On Match Start: Gain 3 Strong [cooldown permanent]
+recovered,,Vital,common,On GainStatus Curse: Negate Curse. Set CurseChance to 0. Discard this Blessing
+recovered,,Vital,common,On Skip Turn: Gain 2 Strong
+recovered,,Vital,common,On Turn Start: If self has wound: you may open 1 wound. If you do: Ignore Sleep/Stun this turn. Gain 1 Strong
 ...,,,,
 recovered,,Vital,uncommon,On PlayerDeath: If Self has Wounds or Died from Wounds: Remove All Wounds then Set HP to 1. [Cooldown Permanent]
 recovered,blood brothers,Vital,uncommon,On DealDamage: If Player.Culture == Bastard: Apply 1 Wound
-recovered,,Vital,uncommon,
-recovered,,Vital,uncommon,
+recovered,,Vital,uncommon,On UnlearnMove: Gain 2/3/6 Essence (per rarity)
+recovered,,Vital,uncommon,On Turn Start: If HP < 50% MaxHP: Self Gain 1 Strong
 ...,,,,
 recovered,,Vital,rare,On DealDamage: If DamageElement == Vital: Trigger OpenWounds.
 recovered,,Vital,rare,On Apply Wound: X = RandVal(1-10). If X < Self.Wound: Apply Wound. Repeat up to 3 times
-recovered,,Vital,rare,
-recovered,,Vital,rare,
+recovered,,Vital,rare,At EnemyDeath: This Shop will be a Bastard Shop. If Defile Corpse: You may learn 2 Moves
+recovered,,Vital,rare,At Match Start: MaxHP Divides by 2: Until End of Match: Self is Resistant to All Elements other than Vital
 -------------,<< force >>,,,
-recovered,,Force,common,On Match Start: Peek at up to 2 Private Moves
-recovered,,Force,common,
-recovered,,Force,common,
-recovered,,Force,common,
+recovered,,Force,common,On Match Start: X = DeclareInt(0-2). Peek at X Private Moves. Then Self.Curse Chance += X
+recovered,,Force,common,On Hurt: Apply 2 Decay to Attacker. [cooldown permanent]
+recovered,,Force,common,On Deal Damage: Random Player Extends Random status [charges:2]
+recovered,,Force,common,On Move Publicized: Apply 1 CurseChance to Owner [charges 5]
 ...,,,,
 recovered,,Force,uncommon,On TickDecay: After Apply CurseChance: Gain Immune to Decay til end of Turn.
 recovered,,Force,uncommon,On Weather Event: Negate All Damage Until Next Turn.
-recovered,,Force,uncommon,
-recovered,,Force,uncommon,
+recovered,,Force,uncommon,On EnemyDeath: You may break this. If Break: Upgrades this round are Free
+recovered,,Force,uncommon,On Choose Move: If Self has Curse: You May Peek all Moves and See Enemy Intents
 ...,,,,
 recovered,,Force,rare,On PlayerDeath: Heal HP to MaxHP Negate All Status Effects Negate All Attunements. Discard this Blessing.
-recovered,,Force,rare,While Sleep: Immune to Non-Status Damage
-recovered,,Force,rare,
-recovered,,Force,rare,
+recovered,,Force,rare,On Match Start: X = # of Blessings in Inventory. X Times: Apply 1 Random Status to a Random Player.
+recovered,,Force,rare,On SkipTurn: If Skip was Voluntary: Draft 2 or 3 random statuses: apply 1 to yourself and the other to the opponent
+recovered,,Force,rare,On Turn End: If Cursed: Player may Force-Trigger Weather Event; if so: [cooldown permanent]
 -------------,<< thunder >>,,,
 recovered,,Thunder,common,On ExecuteTurn: If self has Quick: Gain 1 Energy.
-recovered,,Thunder,common,
-recovered,,Thunder,common,
-recovered,,Thunder,common,
+recovered,,Thunder,common,On Match Start: Gain 1 Energy
+recovered,,Thunder,common,On Gain Energy: If Energy after gain % 2 = 0: gain 1 more energy
+recovered,,Thunder,common,On SpendEnergy: You may spend X charges on this blessing to pay an additional X energy (loses 1 before spend) [charges 5]
 ...,,,,
 recovered,,Thunder,uncommon,On MakeDeclaration: If self Has Quick: You may see Opponent's Move Choice.
-recovered,,Thunder,uncommon,
-recovered,,Thunder,uncommon,
-recovered,,Thunder,uncommon,
+recovered,Blessed Battery,Thunder,uncommon,On Turn Start: Add 1 Charge to Any other Blessing [charges 3]
+recovered,Send to Ground,Thunder,uncommon,On Hurt: You May Bank 1 Move to Negate Damage
+recovered,,Thunder,uncommon,On Spend Blessing Charge: Self Gains Quick
 ...,,,,
 recovered,,Thunder,rare,On DealDamage: Damage is Dealt to All Players. On ExecuteTurn: Times += 2
-recovered,,Thunder,rare,
-recovered,,Thunder,rare,
-recovered,,Thunder,rare,
+recovered,,Thunder,rare,On Blessing enters Cooldown: Negate Cooldown (even if 'permanent') [charges 1]
+recovered,,Thunder,rare,On Weather Event: Self may Ignore Effects of Weather Event. If so: [cooldown permanent]
+recovered,,Thunder,rare,On Choose Move: Choose 2 Moves. This Turn you cast Both Moves in your chosen order [charge 1]
+-------------,,,,
+[   HYBRID  ],==================,========,=========,============================================================================================================
+-------------,< water / stone >,,,
+hybrid,,water/stone,rare,Active while Attuned to Water/Stone: On TickCooldown: If Cooldown == 0: if move is Banked: Unbank this move. If this move is Active: Gain 1 Tough
+-------------,,,,
+-------------,< water / fire  >,,,
+hybrid,,water/fire,rare,Active while Attuned to Water/Fire: On ExecuteMove and move is Attack: If Move = Water and Target Attuned to Fire: Apply 1 Anger. If Move = Fire and Target Attuned to Water: Negate Attunement before Damage
+-------------,,,,
+-------------,< water / plant >,,,
+hybrid,,water/plant,rare,Active while Attuned to Water/Plant: Init X = 1. On Enemy DamageStatus Phase: If Enemy HasStatus Burn/Decay: if X == 1: X -= 1; skip ticking down burn/decay this turn. else: X = 1 and allow tickdown. On Enemy Reduce/NegateStatus: if status == Burn/Decay: ignore Reduce/Negate.
+-------------,,,,
+-------------,< water / vital >,,,
+hybrid,,water/vital,rare,Active while Attuned to Water/Vital: On Apply Wound to Enemy: Reduce self wound 1. Then If Self Wound == 0: Open 1 Wound on Enemy.
+-------------,,,,
+-------------,< water / force >,,,
+hybrid,,water/force,rare,Active while Attuned to Water/Force: On Start of Turn: If Self.Cursed: X = Declare Element. Attune to X. Then if Attuned to 7 Elements: Deal 1 Damage of each Element to Target
+-------------,,,,
+-------------,< water/thunder >,,,
+hybrid,,water/thunder,rare,Active while Attuned to Water/Thunder: On ExecuteMove and move is attack: If Move = Thunder and Target Attuned to Water: Apply 1 Stun. If Move = Water and Target Attuned to Thunder: Gain X Energy where X = Base DMG.
+-------------,,,,
+-------------,< stone / fire  >,,,
+hybrid,,stone/fire,rare,Active while Attuned to Stone/Fire: On Execute Move and Move is Attack: If Self has Burn: Swap Self.Burn and Move.Iterations. (Likely insanely Powerful)
+-------------,,,,
+-------------,< stone / plant >,,,
+hybrid,,stone/plant,rare,Active while Attuned to Stone/Plant: On Gain Tough: Gain Regen. On Gain Regen: Gain Tough. (Coded to Prevent Self-Trigger)
+-------------,,,,
+-------------,< stone / vital >,,,
+hybrid,,stone/vital,rare,Active while Attuned to Stone/Vital: On End of Turn: If Move Skipped: Next Turn Move Iterations += 1
+-------------,,,,
+-------------,< stone / force >,,,
+hybrid,,stone/force,rare,Active while Attuned to Stone/Force: On Apply Decay: Apply Slow. On Apply Tough: Reduce Self CurseChance
+-------------,,,,
+-------------,< stone/thunder >,,,
+hybrid,Time Paradox,stone/thunder,rare,Active while Attuned to Stone/Thunder: If Self has both Quick and Slow: Ignore Slow in TurnOrder Calculation; then Move Iters += 1
+-------------,,,,
+-------------,< fire / plant  >,,,
+hybrid,,fire/plant,rare,Active while Attuned to Fire/Plant: On TickBurn: Gain 1 Regen; Gain 1 Energy.
+-------------,,,,
+-------------,< fire / vital  > ,,,
+hybrid,,fire/viral,rare,Active while Attuned to Fire/Vital: On Enemy TickBurn: Enemy Opens 1 Wound
+-------------,,,,
+-------------,< fire / force  >,,,
+hybrid,,fire/force,rare,Active while Attuned to Force/Fire: At Turn Start: Gain 1 Energy. X = Declared Int. Spend X Energy. X-1 Times: Y = RandInt(0-1); Apply Y Burn to Target Enemy
+-------------,,,,
+-------------,< fire/thunder  >,,,
+hybrid,,fire/thunder,rare,Active while Attuned to Fire/Thunder: On TurnStart: X = RandInt(1-6); If X < Self.Energy: Spend Energy: Base DMG += X; If X > 2: On Apply Burn: Turns += 1
+-------------,,,,
+-------------,< plant / vital >,,,
+hybrid,,plant/vital,rare,Active while Attuned to Plant/Vital: On TickRegen: Self Reduce Wound 1. Then if wound == 0 gain 1 Strong.
+-------------,,,,
+-------------,< plant / force >,,,
+hybrid,,plant/force,rare,Active while Attuned to Plant/Force: On Enemy TickDecay: Self Gain X Life where X = Enemy CurseChance.
+-------------,,,,
+-------------,< plant/thunder >,,,
+hybrid,,plant/thunder,rare,Active while Attuned to Plant/Thunder: On Overgrowth/Overload: Trigger all Overload/Overgrowth Effects on all Active Moves.
+-------------,,,,
+-------------,< vital / force >,,,
+hybrid,,vital/force,rare,Active while Attuned to Vital/Force: On DealDamage: If self cursed: target CurseChance += Damage. Then Roll Enemy CurseChance. If not Cursed: Self CurseChance += 1 and then Roll CurseChance
+-------------,,,,
+-------------,< vital/thunder >,,,
+hybrid,,vital/thunder,rare,Active while Attuned to Vital/Thunder: On Check Disqualifiers: X = Statuses Disqualied for; Ignore Disqualifiers. Move.Iters = 1+X.
+-------------,,,,
+-------------,< force/thunder >,,,
+hybrid,,force/thunder,rare,Active while Attuned to Force/Thunder: On DealDamage: Damage += X where X is number of Private Active Moves Enemu has.
 -------------,,,,
 [   ELITE   ],==================,========,=========,============================================================================================================
 -------------,,,,
-elite,,Water,elite,
-elite,,Water,elite,
+elite,,Water,elite,On Turn End: Reduce all Self Statuses by 1
+elite,,Water,elite,On Turn End: You may transfer cooldowns from any moves onto oneanother.
 -------------,,,,
-elite,,Stone,elite,
-elite,,Stone,elite,
+elite,,Stone,elite,On Match Start: Self Tough = Max Tough. On Hurt: Reduce All Damage Taken to 1. On TickStatuses: If Self not Tough: Discard this Blessing
+elite,,Stone,elite,Init X = 0. On Turn End: X += 1. On ExecuteTurn: If Move is Attack: Move Iterations = X. X = 0. Then [cooldown permanent]
 -------------,,,,
-elite,,Fire,elite,Init: X == 0. On Apply Burn: X += 1 then Deals X Fire Damage to all Players.
-elite,,Fire,elite,
+elite,,Fire,elite,Init: X = 0. On Apply Burn: X += 1 then Deals X Fire Damage to all Players.
+elite,,Fire,elite,On CalculateDamage: Base Damage += Self Burn Turns.
 -------------,,,,
-elite,,Plant,elite,
-elite,,Plant,elite,
+elite,,Plant,elite,Init: X = 3. On Hurt: X -= 1. On Match End: if X > 0. Max_HP += X (Persists beyond Match)
+elite,,Plant,elite,On Choose Move: If Turns AttunedTo Plant > 7: You may Skip this Turn. If you do: Heal to Max HP. Energy = Max Energy. Regen = Max Regen. then [Cooldown Permanent]
 -------------,,,,
-elite,,Vital,elite,
-elite,,Vital,elite,
+elite,,Vital,elite,On PlayerDeath: Deal 1 Vital Damage to Enemy for each Wound on Self. If Enemy Dies: Self.HP == 1 else lose
+elite,,Vital,elite,On MatchStart: Self HP /= 2 (Rounded Down). On DealDamage: If Self HP <50% MaxHP: Damage Element = Vital and Gains Lifesteal
 -------------,,,,
 elite,,Force,elite,While Cursed: You may Cast Moves on Cooldown as if they were not on cooldown.
-elite,,Force,elite,
+elite,,Force,elite,On Choose Move: You May skip your turn to Force Weather Event to Trigger. If you do: [cooldown Permanent]
 -------------,,,,
-elite,,Thunder,elite,
-elite,,Thunder,elite,
-,,,,
+elite,,Thunder,elite,On Match Start: All Self Moves Speed = Quick. On Turn Skipped: Until End of Match All Opponent Move Speed = Slow
+elite,,Thunder,elite,At Turn End: You may Publicize one of your own Private Moves. If you do: Deal 3 Thunder Damage to Opponent.
+-------------,,,,
