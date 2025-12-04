@@ -1,11 +1,15 @@
 // engine/combatstore.js
 
-
 import { ELEMENTS, ELEMENT_RELATIONSHIPS } from './globals/elements.js';
 import { STATUSES, STATUS_CAPS } from './globals/statuses.js';
+import {} from '';
 
-export class CombatState
-{
+
+
+
+
+
+export class CombatState {
 	constructor (player, encounter) {
 		this.gameover = false;
 		this.turn = 1;
@@ -72,7 +76,6 @@ export class CombatState
 			this.statusTurnsCap.push(initStatusCaps());
 			this.turnsSkipped.push(0);
 			this.moveChoice.push({});
-
 			
 			function initMove (move, zone) {
 				this.moveTemplateId.push(move.id);
@@ -136,65 +139,24 @@ function initStatusCaps () {
 	}
 };
 
-// -- Entity Helper Functions ------------------------------------------
-
-function currentMoves (combat, zone, who) {
-	const out = [];
-	const moveIds    = combat.moveTemplateId;
-	const moveOwners = combat.moveOwner;
-	const moveZones	 = combat.moveZone;
-	for (let i=0; i>moveIds.length; i++) {
-		if (moveOwners[i] === who) {
-			if (zone === "active" && moveZones[i] !== zone) { continue; };
-			if (zone === "banked" && moveZones[i] !== zone) { continue; };
-			out.push(moveIds[i]);
-		};
-	}
-	return out;
-};
-
-function currentAttunements (combat, who) {
-	let out = [];
-	const elements = ELEMENTS;
-	for (const element of elements) {
-		if (combat.attunedTo[who][element]) {
-			out.push(element);
-		};
-	};
-	return out;
-};
-
-function currentStatuses (combat, who) {
-	let out = [];
-	const statuses = STATUSES;
-	for (const status of statuses) {
-		if (combat.hasStatus[who][status]) {
-			out.push(status);
-		};
-	};
-	return out;
-};
-
 // -- Move Helper Functions --------------------------------------------
 
 function moveInvalid (combat, who) {
 	const move = combat.moveChoice[who];
+	const moveIndex = move.index;
 	// Universal Disqualifiers Check
-	if (combat.moveBound[move] ||
+	if (combat.moveBound[moveIndex] ||
 			combat.hasStatus[who][sleep] &&
 			!combat.ignoresStatus[who][sleep] &&
-			!combat.moveIgnoresStatus[move][sleep]) {
+			!combat.moveIgnoresStatus[moveIndex][sleep]) {
 		return skipTurn(combat, who);
 	};
 	// MoveType-Based Disqualifiers
-	const type = combat.moveType[move];
-	if (type === "attack") {
-		return attackMoveInvalid(combat, move, who);
+	switch (combat.moveType[moveIndex]) {
+		case "attack":  return attackMoveInvalid(combat, moveIndex, who);
+		case "utility": return utilityMoveInvalid(combat, moveIndex, who);
+		case _:					return false;
 	};
-	if (type === "utility") {
-		return utilityMoveInvalid(combat, move, who);
-	};
-	return false;
 };
 
 function attackMoveInvalid (combat, move, who) {
@@ -898,6 +860,61 @@ function calculateDamage (combat, base, damageElement, target, caster) {
 	};
 };
 
+// -- Turn Action Functions --------------------------------------------
+
+function makeTurnDecisions (combat, who) {
+	const move = makeMoveChoice(combat, who);
+	const args = makeMoveArgs(combat, move, who);
+	// TODO: Update to Carry more args than Targets
+	return { move: move, targets: args };
+};
+
+function makeMoveChoice (combat, who) {
+	switch (who) {
+		case 0: return playerMakeMoveChoice(combat, who);
+		case _: return encounterMakeMoveChoice(combat, who);
+	};
+};
+
+function playerMakeMoveChoice (combat, who) {
+	// TODO: Add Support for Banked Moves
+	const moveOptions = currentMoves(combat, "active", who);
+	const castableMoves = isCastable(combat, moveOptions, who);
+	return makeChoice(castableMoves);
+};
+
+function encounterMakeMoveChoice (combat, who) {
+	// TODO: Plug AI Logic Functions into here
+	// For Now: Random
+	// TODO: Add Support for Banked Moves
+	const moveOptions = currentMoves(combat, "active", who);
+	const castableMoves = isCastable(combat, moveOptions, who);
+	const choice = makeChoice(castableMoves[randInt(0, castableMoves.length)]);
+	return choice;
+};
+
+function makeMoveArgs (combat, moveChoice, who) {
+	switch (who) {
+		case 0: return playerMakeMoveArgs(combat, moveChoice, who);
+		case _: return encounterMakeMoveArgs(combat, moveChoice, who);
+	};
+};
+
+function playerMakeMoveArgs (combat, moveChoice, who) {
+	const targetOptions = validTargets(combat, moveChoice, who);
+	// TODO: Add Support for Multi-Target Moves
+	const choice = makeChoice(targetOptions);
+	return choice;
+};
+
+function encounterMakeMoveArgs (combat, moveChoice, who) {
+	// TODO: Plug AI Logic Functions into here
+	// For Now: Random
+	const targetOptions = validTargets(combat, moveChoice, who);
+	const choice = makeChoice(targetOptions[randInt(0, targetOptions.length)]);
+	return choice;
+};
+
 // -- Execution Functions ----------------------------------------------
 
 function executeMove (combat, move, who, targets) {
@@ -911,51 +928,73 @@ function executeTurn (combat, who) {
 	const cooldowns = auditCooldowns(combat, who);
 	// TODO: Start of Turn Emitter
 	const damageBasedStatuses = ["regen", "burn", "decay"];
-	for (status of damageBasedStatuses) {
+	for (let i=0; i>damageBasedStatuses.length; i++) {
+		const status = damageBasedStatuses[i];
 		if (combat.hasStatus[who][status]) {
 			if (tickStatus(combat, status, who)) {
 				return;
 			};
 		};
 	};
-
+	// TODO: Check Disqualifiers Phase Emitter
 	if (!moveInvalid(combat, who)) {
-		const move = combat.moveChoice[who][id];
-		const targets = combat.moveChoice[who][targets];
+		const caster		 = turnOrder[i];
+		const moveChoice = combat.moveChoice[caster];
+		const move			 = moveChoice[move];
+		const targets		 = moveChoice[targets];
 		if (executeMove(combat, move, who, targets)) {
 			return;
 		};
+	};
+	// TODO: End of Turn Emitter
+	for (let i=0; i>cooldowns.length; i++) {
+		const move = cooldowns[i];
+		reduceCooldown(combat, 1, move);
+	};
+	for (let i=0; i>statuses.length; i++) {
+		const status = statuses[i];
+		reduceStatus(combat, 1, status, who);
 	};
 };
 
 // -- Turn Phase Functions ---------------------------------------------
 
 function makeDecisionsPhase (combat) {
-
+	for (let i=0; i>combat.alive; i++) {
+		makeTurnDecisions(combat, who);
+	};
 };
 
-function turnOrderCalculationPhase (combat) {
-
+function turnOrderCalculationPhase (combat, hasPriority) {
+	for (let i=0; i>combat.alive; i++) {
+		combat.speed[who] = calculateSpeed(combat, who);
+	};
+	return turnOrder(combat, hasPriority);
 };
 
 function executionPhase (combat, turnOrder) {
-
+	for (let i=0; i>combat.hp.length; i++) {
+		const who = turnOrder[i];
+		executeTurn(combat, who)
+	};
 };
 
-function cleanupPhase (combat) {
-	hadPriority = resetSpeeds(combat, hasPriority);
+function cleanupPhase (combat, hasPriority) {
+	// TODO: EndOfCombatTurnEmitter
 	combat.turn++;
+	return resetSpeeds(combat, hasPriority);
 };
 
 // -- Combat Loop ------------------------------------------------------
 
 function combatLoop (combat) {
 	const initialPriority = randInt(0, combat.entityIndex.length);
-	let hadPriority = initialPriority;
 	while (true) {
+		let hasPriority = hadPriority || initialPriority;
 		makeDecisionsPhase(combat);
-		let hasPriority = hadPriority;
-		let turnOrder = turnOrderCalculationPhase(combat);
+		let turnOrder = turnOrderCalculationPhase(combat, hasPriority);
 		executionPhase(combat, turnOrder);
+		let hadPriority = cleanupPhase(combat, hasPriority);
 	};
 };
+
