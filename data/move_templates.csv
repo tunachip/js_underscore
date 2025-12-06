@@ -1,0 +1,65 @@
+index,name,type,element,iters,description
+-----,,,,,
+1,,attack,water,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+2,,attack,stone,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+3,,attack,fire,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+4,,attack,plant,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+5,,attack,vital,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+6,,attack,force,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+7,,attack,thunder,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy;
+-----,,,,,
+8,ice out,utility,water,1,extends cooldown on target move by 2; [cooldown 2];
+9,,utility,stone,1,applies 2 tough to target; applies 1 slow to target;
+10,,utility,fire,1,applies 2 energy to target; applies 1 burn to target;
+11,restore,utility,plant,1,applies 2 regen to target; [cooldown 1];
+12,,utility,vital,1,applies 2 strong to target; applies 1 anger to target;
+13,,utility,force,1,applies 1 random status to caster; applies 1 random status to target;
+14,,utility,thunder,1,reduces energy for target by 2; if target loses more than 1 energy this way: applies 2 quick to target;
+-----,,,,,
+15,fluid motion,attack,water,1,caster attunes to meta element; $e = declare element; loop: deals 2 $e element damage to enemy;
+16,rocky two,attack,stone,2,caster attunes to meta element; loop: deals 1 meta element damage to enemy;
+17,hot shot,attack,fire,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy; $e = randInt; if $e <= caster's energy: caster spends energy and applies 1 burn to enemy; else: caster gains 1 energy;
+18,root cause,attack,plant,1,caster attunes to meta element; loop: deals 1 meta element damage to enemy; target attunes to plant;
+19,wound up,attack,vital,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy; if enemy takes more than 2 damage from this move: applies 1 wound to target;
+20,,attack,force,1,caster attunes to meta element; loop: deals 1 meta element damage to enemy; if self has > 1 status: applies 1 decay to target;
+21,,attack,thunder,1,caster attunes to meta element; loop: deals 2 meta element damage to enemy; if pay 1 energy: Quick Move;
+-----,,,,,
+22,,utility,water,1,banks target move; bank this move;
+23,,utility,stone,1,reduces cooldown on all moves caster owns by 1; [cooldown 2];
+24,sweat out,utility,fire,1,$e = declareVar(element); negates target attunement to $e; if pay 2 energy: repeat this process; (loops until choose not to spend energy)
+25,,utility,plant,1,applies 1 regen to target; if target turns attuned to plant > 4: spends target attunement to plant: applies 1 sleep to target;
+26,,utility,vital,1,$e = declareVar(status); [cooldown 2]; while on cooldown: caster ignores status $e;
+27,,utility,force,1,attempts curse on target; if succesful: reduces self curse chance by 3; else: applies 1 curse chance to target; applies 1 curse chance to caster;
+28,eureka,utility,thunder,1,init: (private)$t = randVar(turn(fibonacci)); on cast: if turn == $t: deals $t thunder damage to enemy; while banked: at start of turn: self gains 1 energy;
+-----,,,,,
+15,,attack,water,1,
+16,,attack,stone,1,
+17,,attack,fire,1,
+18,,attack,plant,1,
+19,,attack,vital,1,
+20,,attack,force,1,
+21,,attack,thunder,1,
+-----,,,,,
+22,,utility,water,1,
+23,,utility,stone,1,
+24,,utility,fire,1,
+25,,utility,plant,1,
+26,,utility,vital,1,
+27,,utility,force,1,
+28,,utility,thunder,1,
+-----,,,,,
+29,,attack,water,1,
+30,,attack,stone,1,
+31,,attack,fire,1,
+32,,attack,plant,1,
+33,,attack,vital,1,
+34,,attack,force,1,
+35,,attack,thunder,1,
+-----,,,,,
+36,,utility,water,1,
+37,,utility,stone,1,
+38,,utility,fire,1,
+39,,utility,plant,1,
+40,,utility,vital,1,
+41,,utility,force,1,
+42,,utility,thunder,1,

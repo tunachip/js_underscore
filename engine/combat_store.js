@@ -1,13 +1,8 @@
 // engine/combatstore.js
 
-import { ELEMENTS, ELEMENT_RELATIONSHIPS } from './globals/elements.js';
+import { ELEMENTS, ELEMENT_DAMAGE_CALCULATIONS } from './globals/elements.js';
 import { STATUSES, STATUS_CAPS } from './globals/statuses.js';
-import {} from '';
-
-
-
-
-
+// import {} from '';
 
 export class CombatState {
 	constructor (player, encounter) {
@@ -816,7 +811,7 @@ function calculateDamage (combat, base, damageElement, target, caster) {
 		return { damage: 0, healed: 0, spent: null };
 	};
 	const elements = ELEMENTS;
-	const rules	= ELEMENT_RELATIONSHIPS;
+	const rules	= ELEMENT_DAMAGE_CALCULATIONS;
 	// Initialize Values
 	let delta		= 0;
 	let healed	= 0;
