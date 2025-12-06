@@ -11,7 +11,7 @@ export const ELEMENTS = [
 	"thunder"
 ];
 
-export const ELEMENT_DAMAGE_CALCULATIONS = {
+export const ELEMENT_DAMAGE_RULES = {
 	water: {
 		water:	 "",
 		stone:	 "modify -1",

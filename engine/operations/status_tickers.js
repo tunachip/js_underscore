@@ -1,0 +1,41 @@
+// engine/operations/status_tickers.js
+
+
+function tickRegen (combat, turns, who) {
+	if (combat.attunedTo[who]['fire'])  { turns++; }
+	if (combat.attunedTo[who]['vital']) { turns++; }
+	reduceStatus(combat, turns, 'regen', who);
+	return heal(combat, turns, who);
+}
+
+function tickBurn (combat, turns, who) {
+	reduceStatus(combat, turns, 'burn', who);
+	const result = calculateDamage(combat, turns, 'fire', who);
+	return dealDamage(combat, result.damage, who);
+}
+
+function tickDecay (combat, turns, who) {
+	reduceStatus(combat, turns, 'decay', who);
+	const result = calculateDamage(combat, turns, 'force', who);
+	if (result.damage > 0) {
+		applyCurseChance(combat, turns, who);
+	}
+	return dealDamage(combat, result.damage, who);
+}
+
+export function tickStatus (combat, status, who) {
+	if (!combat.hasStatus[who][status]) {
+		return { break: false };
+	}
+	if (combat.ignoresStatus[who][status]) {
+		return reduceStatus(combat, 1, status, who);
+	}
+	switch (status) {
+		case 'regen': { return tickRegen(combat, 1, who); }
+		case 'burn': {	return tickBurn(combat, 1, who); }
+		case 'decay': { return tickDecay(combat, 1, who); }
+		case 'wound': { return { break: false }; }
+		default: {			return reduceStatus(combat, 1, status, who); }
+	}
+}
+
