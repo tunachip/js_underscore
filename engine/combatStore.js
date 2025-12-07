@@ -58,6 +58,7 @@ export function createCombatState (player, encounters = []) {
 }
 
 export function addEntity (combat, entity, isPlayer) {
+	const idx = combat.entityName.length;
 	combat.entityName.push(entity.name);
 	combat.isPlayer.push(isPlayer);
 	combat.isElite.push(Boolean(entity.isElite));

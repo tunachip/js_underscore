@@ -60,10 +60,10 @@ function filterByZone (combat, candidates, zone) {
 		}
 		default: {
 			if (zone !== 'any') {
-				for (let i=candidates.length; i==0; i--) {
+				for (let i=candidates.length-1; i>=0; i--) {
 					const move = candidates[i];
 					if (combat.moveZone[move] !== zone) {
-						candidates.pop();
+						candidates.splice(i, 1);
 					}
 				}
 			}
@@ -78,28 +78,28 @@ function filterByCooldownState (combat, candidates, cooldownState) {
 			return candidates;
 		}
 		case 'permanent': {
-			for (let i=candidates.length; i==0; i--) {
+			for (let i=candidates.length-1; i>=0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] !== -1) {
-					candidates.pop();
+					candidates.splice(i, 1);
 				}
 			}
 			return candidates;
 		}
 		case 'onCooldown': {
-			for (let i=candidates.length; i==0; i--) {
+			for (let i=candidates.length-1; i>=0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] !== 0) {
-					candidates.pop();
+					candidates.splice(i, 1);
 				}
 			}
 			return candidates;
 		}
 		case 'notOnCooldown': {
-			for (let i=candidates.length; i==0; i--) {
+			for (let i=candidates.length-1; i>=0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] === 0) {
-					candidates.pop();
+					candidates.splice(i, 1);
 				}
 			}
 			return candidates;
@@ -111,10 +111,10 @@ function filterBySpeed (combat, candidates, speeds) {
 	if (speeds === 'any') {
 		return candidates;
 	}
-	for (let i=candidates.length; i==0; i--) {
+	for (let i=candidates.length-1; i>=0; i--) {
 		const move = candidates[i];
 		if (!speeds.includes(combat.moveSpeed[move])) {
-			candidates.pop();
+			candidates.splice(i, 1);
 		}
 	}
 	return candidates;

@@ -13,31 +13,32 @@ export const basicFireAttack = {
 	initsBound: false,
 	ignoresStatus: {},
 	fragment: {},
-	targets: {
-		alignment: 'entity', // picks from entities
-		scope: 'enemy', // scope is limited to only enemies
+	target: {
+		alignment: 'entity',
+		scope: 'enemy',
 		count: 1,
-		mode: 'select' // player selects from items in the scope
+		mode: 'select'
 	},
 	operations: [
 		{
 			code: 'applyAttunement',
 			args: {
-				element: 'meta', // resolves to 'element' metadata value
-				who: 'caster', // resolves to caster of the move on execution
+				element: 'meta',
+				who: 'caster',
 			},
 		},
 		{
 			code: 'loop',
 			args: {
-				times: 'meta', // resolves to 'iterations' metadata value
+				times: 'meta',
 				inner: [
 					{
 						code: 'attack',
 						args: {
+							element: 'meta',
 							amount: 2,
 							caster: 'caster',
-							targets: ['targets'], // resolves to targets
+							target: 'meta',
 						},
 					},
 				]

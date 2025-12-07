@@ -1,10 +1,20 @@
 // engine/operations/opcodereader.js
 
+import { applyAttunement, negateAttunement, spendAttunement, } from './operations/attunement_ops.js';
+import { bankMove, unbankMove, privatizeMove, publicizeMove, setMoveSpeed, setMoveElement, applyMoveIgnoresStatus, negateMoveIgnoresStatus, setMoveIterations, applyMoveIterations, reduceMoveIterations, negateMoveIterations, spendMoveIterations, } from './operations/change_move_ops.js';
+import { applyCooldown, negateCooldown, reduceCooldown, extendCooldown, spendCooldown, } from './operations/cooldown_ops.js';
+import { applyCurseChance, negateCurseChance, reduceCurseChance, spendCurseChance, } from './operations/curse_chance_ops.js';
+import { heal, attack, } from './operations/damage_ops.js';
+import { applyEnergy, negateEnergy, reduceEnergy, spendEnergy, } from './operations/energy_ops.js';
+import { applyIgnoresStatus, negateIgnoresStatus, spendIgnoresStatus, } from './operations/ignores_ops.js';
+import { applyImmuneToStatus, negateImmuneToStatus, spendImmuneToStatus, } from './operations/immunity_ops.js';
+import { openWounds, attemptCurse, } from './operations/special_event_ops.js';
+import { applyStatus, negateStatus, reduceStatus, extendStatus, spendStatus, } from './operations/status_ops.js';
+import { setVar, randVar, declareVar, } from './operations/var_setter_ops.js';
+import { tickRegen, tickBurn, tickDecay, } from './operations/status_tickers.js';
 
-// Imports TODO -- still considering better organizations
 
-
-function executeOperations (combat, move, who, targets, operations) {
+export function executeOperations (combat, move, who, targets, operations) {
 	for (let i=0; i<operations.length; i++) {
 		const operation = operations[i];
 		const results = executeOperation(combat, move, who, targets, operation);
@@ -12,9 +22,10 @@ function executeOperations (combat, move, who, targets, operations) {
 				return results
 		}
 	}
+	return { break: false };
 }
 
-function executeOperation (combat, move, who, targets, operation) {
+export function executeOperation (combat, move, who, targets, operation) {
 	const code = operation['code'];
 	const args = operation['args'];
 
@@ -26,6 +37,7 @@ function executeOperation (combat, move, who, targets, operation) {
 			if (results.break) {
 				return results;
 			}
+			return { break: false };
 		}
 	
 		case 'loop': {
@@ -37,6 +49,7 @@ function executeOperation (combat, move, who, targets, operation) {
 					return results;
 				}
 			}
+			return { break: false };
 		}
 	
 		case 'branch': {
@@ -53,27 +66,28 @@ function executeOperation (combat, move, who, targets, operation) {
 			if (results.break) {
 				return results;
 			}
+			return { break: false };
 		}
 	
 		case 'setVar': {
 			const key = args['key'];
 			const value = args['value'];
-			const private = args['private'];
-			return setVar(combat, key, value, private);
+			const secret = args['secret'];
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'randVar': {
 			const key = args['key'];
 			const type = args['type'];
-			const private = args['private'];
-			return randVar(combat, key, type, private);
+			const secret = args['secret'];
+			return randVar(combat, key, type, secret);
 		}
 	
 		case 'declareVar': {
 			const key = args['key'];
 			const type = args['type'];
-			const private = args['private'];
-			return declareVar(combat, key, type, private);
+			const secret = args['secret'];
+			return declareVar(combat, key, type, secret);
 		}
 	
 		case 'applyAttunement': {
@@ -91,11 +105,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendAttunement': {
 			const element = args['element'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendAttunement(combat, element, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyStatus': {
@@ -126,13 +140,14 @@ function executeOperation (combat, move, who, targets, operation) {
 		}
 	
 		case 'spendStatus': {
+			const turns = args['turns'];
 			const status = args['status'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendStatus(combat, turns, status, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyEnergy': {
@@ -155,11 +170,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendEnergy': {
 			const amount = args['amount'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendEnergy(combat, amount, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyCooldown': {
@@ -188,11 +203,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendCooldown': {
 			const turns = args['turns'];
 			const move = args['move'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendCooldown(combat, turns, move);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyCurseChance': {
@@ -215,11 +230,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendCurseChance': {
 			const amount = args['amount'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendCurseChance(combat, amount, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyImmuneToStatus': {
@@ -237,11 +252,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendImmuneToStatus': {
 			const status = args['status'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendImmuneToStatus(combat, status, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'applyIgnoresStatus': {
@@ -256,14 +271,14 @@ function executeOperation (combat, move, who, targets, operation) {
 			return negateIgnoresStatus(combat, status, who);
 		}
 	
-		case 'spentIgnoresStatus': {
+		case 'spendIgnoresStatus': {
 			const status = args['status'];
 			const who = args['who'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendIgnoresStatus(combat, status, who);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'bankMove': {
@@ -321,6 +336,12 @@ function executeOperation (combat, move, who, targets, operation) {
 			const iterations = args['iterations'];
 			return applyMoveIterations(combat, iterations, move);
 		}
+
+		case 'reduceMoveIterations': {
+			const move = args['move'];
+			const iterations = args['iterations'];
+			return reduceMoveIterations(combat, iterations, move);
+		}
 	
 		case 'negateMoveIterations': {
 			const move = args['move'];
@@ -331,11 +352,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		case 'spendMoveIterations': {
 			const move = args['move'];
 			const iterations = args['iterations'];
-			const key = args['key'];
-			const private = args['private'];
 			const results = spendMoveIterations(combat, iterations, move);
+			const key = args['key'];
+			const secret = args['secret'];
 			const value = results.spent;
-			return setVar(combat, key, value, private);
+			return setVar(combat, key, value, secret);
 		}
 	
 		case 'heal': {
@@ -345,10 +366,11 @@ function executeOperation (combat, move, who, targets, operation) {
 		}
 	
 		case 'attack': {
-			const amount = args['amount'];
+			const element = args['element'];
+			const damage = args['damage'];
 			const caster = args['caster'];
-			const targets = args['targets'];
-			return attack(combat, amount, caster, targets);
+			const target = args['target'];
+			return attack(combat, element, damage, caster, target);
 		}
 	
 		case 'tickBurn': {
@@ -382,39 +404,52 @@ function executeOperation (combat, move, who, targets, operation) {
 	
 		case 'applyWeatherEventChance': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'reduceWeatherEventChance': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'negateWeatherEventChance': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'attemptWeatherEvent': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'setListenerCooldown': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'applyListenerCooldown': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'negateListenerCooldown': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'registerListener': {
 			//TODO
+			return { break: false };
 		}
 	
 		case 'unregisterListener': {
 			//TODO
-		}	
+			return { break: false };
+		}
+
+		default: {
+			return { break: false };
+		}
 	}
 }
 

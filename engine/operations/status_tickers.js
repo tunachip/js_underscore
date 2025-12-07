@@ -4,20 +4,20 @@ import { reduceStatus } from './status_ops.js';
 import { applyCurseChance } from './curse_chance_ops.js';
 import { calculateDamage, dealDamage, heal } from './damage_ops.js';
 
-function tickRegen (combat, turns, who) {
+export function tickRegen (combat, turns, who) {
 	if (combat.attunedTo[who]['fire'])  { turns++; }
 	if (combat.attunedTo[who]['vital']) { turns++; }
 	reduceStatus(combat, turns, 'regen', who);
 	return heal(combat, turns, who);
 }
 
-function tickBurn (combat, turns, who) {
+export function tickBurn (combat, turns, who) {
 	reduceStatus(combat, turns, 'burn', who);
 	const result = calculateDamage(combat, 'fire', turns, who);
 	return dealDamage(combat, result.damage, who);
 }
 
-function tickDecay (combat, turns, who) {
+export function tickDecay (combat, turns, who) {
 	reduceStatus(combat, turns, 'decay', who);
 	const result = calculateDamage(combat, 'force', turns, who);
 	if (result.damage > 0) {

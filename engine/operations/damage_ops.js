@@ -21,10 +21,14 @@ function applyElementalDamageModifiers (combat, element, target) {
 		const attunement = ELEMENTS[i];
 		if (combat.attunedTo[target][attunement]) {
 			const rule = rules[attunement][element].split(' ');
-			switch (rule[0]) {
-				case 'absorbs': { healed += rule[1]; }
-				case 'modify':  { delta  += rule[1]; }
-				case 'blocks':  { spent.push(rule[0]); }
+			if (rule[0] === 'absorbs') {
+				healed += Number(rule[1]);
+			}
+			if (rule[0] === 'modify') {
+				delta += Number(rule[1]);
+			}
+			if (rule[0] === 'blocks') {
+				spent.push(attunement);
 			}
 		}
 	}
@@ -37,12 +41,13 @@ export function calculateDamage (combat, element, damage, target) {
 	}
 	const results = applyElementalDamageModifiers(combat, element, target);
 	if (results.spent.length > 0) {
-		for (let i=0; i<results.spent.length; i++) {
-			negateAttunement(combat, results.spent[i], target);
-		}
+		return { damage: 0, healed: 0, spent: results.spent };
 	}
-	const sum = damage + results.damage;
-	return { damage: Math.max(0, sum), healed: 0, spent: [] };
+	if (results.healed > 0) {
+		return { damage: 0, healed: results.healed, spent: [] };
+	}
+	damage += results.damage;
+	return { damage: Math.max(0, damage), healed: 0, spent: [] };
 }
 
 export function dealDamage (combat, amount, who) {
@@ -79,7 +84,7 @@ export function heal (combat, amount, who) {
 	// TODO: entityHealedEmitter
 	const before = combat.hp[who];
 	const sum = before + amount;
-	const cap = combat.maxHp;
+	const cap = combat.maxHp[who];
 	combat.hp[who] = Math.min(cap, sum);
 	// TODO: fullHealEmitter
 	if (sum >= cap) {
@@ -95,8 +100,7 @@ export function attack (combat, element, damage, caster, target) {
 	damage = applyDamageModifierStatuses(combat, damage, caster, target);
 	const results = calculateDamage(combat, element, damage, target);
 	if (results.healed > 0) {
-		heal(combat, results.healed, target);
-		return { break: false };
+		return heal(combat, results.healed, target);
 	}
 	if (results.spent.length > 0) {
 		for (let i=0; i<results.spent.length; i++) {

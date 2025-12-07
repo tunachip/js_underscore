@@ -23,21 +23,22 @@ export const basicPlantMove = {
 		{
 			code: 'applyAttunement',
 			args: {
-				element: 'meta', // resolves to 'element' metadata value
-				who: 'caster', // resolves to caster
+				element: 'meta',
+				who: 'caster',
 			},
 		},
 		{
 			code: 'loop',
 			args: {
-				times: 'meta', // resolves to 'interations' metadata value
+				times: 'meta',
 				inner: [
 					{
 						code: 'attack',
 						args: {
+							element: 'meta',
 							amount: 2,
 							caster: 'caster',
-							targets: ['targets'], // resolves to targets from choice
+							target: 'meta',
 						},
 					},
 				]

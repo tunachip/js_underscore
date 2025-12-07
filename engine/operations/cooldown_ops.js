@@ -30,7 +30,7 @@ export function reduceCooldown (combat, turns, move) {
 }
 
 export function extendCooldown (combat, turns, move) {
-	if (combat.moveCooldownTurns > 0) {
+	if (combat.moveCooldownTurns[move] > 0) {
 		return applyCooldown(combat, turns, move);
 	}
 	return { break: false };

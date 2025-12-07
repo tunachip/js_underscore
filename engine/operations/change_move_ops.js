@@ -112,7 +112,7 @@ export function spendMoveIterations (combat, amount, move) {
 		default: {
 			reduceMoveIterations(combat, amount, move);
 			const spent = Math.min(before, amount);
-			return { break: false, spent: spent};
+			return { break: false, spent: spent };
 		}
 	}
 }

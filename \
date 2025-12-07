@@ -22,8 +22,8 @@ export function openWounds (combat, amount, who) {
 	for (let i=0; i<amount; i++) {
 		const calculated = calculateDamage(combat, 'vital', 1, who);
 		if (calculated.damage > 0) {
-			const results = dealDamage(combat, calculated.damage, who);
-			if (results.break) {
+			const result = dealDamage(combat, calculated.damage, who);
+			if (result.break) {
 				return { break: true };
 			}
 		}

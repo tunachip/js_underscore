@@ -2,7 +2,7 @@
 
 import { randMove, randElement, randStatus, randEntity } from './logic_ops.js';
 import { ELEMENTS } from '../globals/elements.js';
-import { STATUSES } from '../globals/statuss.js';
+import { STATUSES } from '../globals/statuses.js';
 
 
 export function setVar (combat, key, value, secret) {
@@ -35,6 +35,9 @@ export function randVar (combat, key, type, range, secret) {
 		case 'move': {
 			const value = randMove(combat, range);
 			setVar(combat, key, value, secret);
+			return { break: false };
+		}
+		default: {
 			return { break: false };
 		}
 	}

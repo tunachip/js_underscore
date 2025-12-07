@@ -35,9 +35,10 @@ export const basicWaterMove = {
 					{
 						code: 'attack',
 						args: {
+							element: 'meta',
 							amount: 2,
 							caster: 'caster',
-							targets: ['targets'],
+							target: 'meta',
 						},
 					},
 				]
