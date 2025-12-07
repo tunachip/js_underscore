@@ -1,5 +1,8 @@
 // engine/operations/status_tickers.js
 
+import { reduceStatus } from './status_ops.js';
+import { applyCurseChance } from './curse_chance_ops.js';
+import { calculateDamage, dealDamage, heal } from './damage_ops.js';
 
 function tickRegen (combat, turns, who) {
 	if (combat.attunedTo[who]['fire'])  { turns++; }
@@ -10,13 +13,13 @@ function tickRegen (combat, turns, who) {
 
 function tickBurn (combat, turns, who) {
 	reduceStatus(combat, turns, 'burn', who);
-	const result = calculateDamage(combat, turns, 'fire', who);
+	const result = calculateDamage(combat, 'fire', turns, who);
 	return dealDamage(combat, result.damage, who);
 }
 
 function tickDecay (combat, turns, who) {
 	reduceStatus(combat, turns, 'decay', who);
-	const result = calculateDamage(combat, turns, 'force', who);
+	const result = calculateDamage(combat, 'force', turns, who);
 	if (result.damage > 0) {
 		applyCurseChance(combat, turns, who);
 	}

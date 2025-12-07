@@ -2,7 +2,7 @@
 
 
 export function applyAttunement (combat, element, who) {
-	combat.attuneTo[who][element] = true;
+	combat.attunedTo[who][element] = true;
 	return { break: false };
 }
 

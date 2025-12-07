@@ -1,4 +1,4 @@
-// engine/combatstore.js
+// engineacombatstore.js
 
 import { ELEMENTS, ELEMENT_DAMAGE_CALCULATIONS } from './globals/elements.js';
 import { STATUSES, STATUS_CAPS } from './globals/statuses.js';

@@ -24,7 +24,7 @@ export function randElement (range) {
 export function randStatus (range) {
 	switch (range) {
 		case 'full': {
-			return STATUSES[randInt(0, ELEMENTS.length)];
+			return STATUSES[randInt(0, STATUSES.length)];
 		}
 		default: {
 			const low = range['low'];
@@ -38,15 +38,17 @@ export function randEntity (combat, scope) {
 	// TODO: Add Support for Allies
 	switch (scope) {
 		case 'full': {
-			const upperBound = combat.entityIndex.length-1;
-			return combat.entityIndex[randInt(0, upperBound)];
+			const low = 0;
+			const high = combat.entityName.length-1;
+			return randInt(low, high);
 		}
 		case 'player': {
 			return 0;
 		}
 		case 'encounter': {
-			const upperBound = combat.entityIndex.length-1;
-			return combat.entityIndex[randInt(1, upperBound)];
+			const low = 1;
+			const high = combat.entityName.length-1;
+			return randInt(low, high);
 		}
 	}
 }
@@ -58,13 +60,14 @@ function filterByZone (combat, candidates, zone) {
 		}
 		default: {
 			if (zone !== 'any') {
-				for (let i=0; i>candidates.length; i++) {
+				for (let i=candidates.length; i==0; i--) {
 					const move = candidates[i];
 					if (combat.moveZone[move] !== zone) {
-						candidates.pop(i);
+						candidates.pop();
 					}
 				}
 			}
+			return candidates;
 		}
 	}
 }
@@ -75,41 +78,43 @@ function filterByCooldownState (combat, candidates, cooldownState) {
 			return candidates;
 		}
 		case 'permanent': {
-			for (let i=0; i>candidates.length; i++) {
+			for (let i=candidates.length; i==0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] !== -1) {
-					candidates.pop(i);
+					candidates.pop();
 				}
 			}
+			return candidates;
 		}
 		case 'onCooldown': {
-			for (let i=0; i>candidates.length; i++) {
+			for (let i=candidates.length; i==0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] !== 0) {
-					candidates.pop(i);
+					candidates.pop();
 				}
 			}
+			return candidates;
 		}
 		case 'notOnCooldown': {
-			for (let i=0; i>candidates.length; i++) {
+			for (let i=candidates.length; i==0; i--) {
 				const move = candidates[i];
 				if (combat.moveCooldownTurns[move] === 0) {
-					candidates.pop(i);
+					candidates.pop();
 				}
 			}
+			return candidates;
 		}
 	}
-	return candidates;
 }
 
 function filterBySpeed (combat, candidates, speeds) {
 	if (speeds === 'any') {
 		return candidates;
 	}
-	for (let i=0; i>candidates.length; i++) {
+	for (let i=candidates.length; i==0; i--) {
 		const move = candidates[i];
-		if (!combat.moveSpeed[move] in speeds) {
-			candidates.pop(i);
+		if (!speeds.includes(combat.moveSpeed[move])) {
+			candidates.pop();
 		}
 	}
 	return candidates;
@@ -117,7 +122,7 @@ function filterBySpeed (combat, candidates, speeds) {
 
 function entityOwnedMoves (combat, conditions, who) {
 	let candidates = [];
-	for (let i=0; i>combat.moveOwner.length; i++) {
+	for (let i=0; i<combat.moveOwner.length; i++) {
 		if (who === 'any' || combat.moveOwner[i] === who) {
 			candidates.push(i);
 		}

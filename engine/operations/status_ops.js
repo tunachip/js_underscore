@@ -2,7 +2,7 @@
 
 
 export function applyStatus (combat, turns, status, who) {
-	if (combat.immuneToStatue[who][status]) {
+	if (combat.immuneToStatus[who][status]) {
 		return { break: false };
 	}
 	const before = combat.statusTurnsLeft[who][status];
@@ -48,7 +48,7 @@ export function spendStatus (combat, turns, status, who) {
 			return { break: false, spent: before };
 		}
 		default: {
-			reduceStatus(combat, turns, who);
+			reduceStatus(combat, turns, status, who);
 			const spent = Math.min(before, turns);
 			return { break: false, spent: spent };
 		}

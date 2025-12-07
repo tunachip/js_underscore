@@ -1,5 +1,7 @@
 // engine/operations/change_move_ops.js
 
+import { negateCooldown } from './cooldown_ops.js';
+
 
 export function bankMove (combat, move) {
 	// TODO: moveBankedEmitter
@@ -21,7 +23,7 @@ export function unbankMove (combat, move) {
 
 export function privatizeMove (combat, move) {
 	// TODO: movePrivatizedEmitter
-	if (!combat.moveIsPrivate[move]) {
+	if (combat.moveIsPrivate[move] !== true) {
 		combat.moveIsPrivate[move] = true;
 	}
 	return { break: false };
@@ -37,7 +39,7 @@ export function publicizeMove (combat, move) {
 
 export function setMoveSpeed (combat, speed, move) {
 	// TODO: moveSpeedChangedEmitter
-	if (!combat.moveSpeed[move] === speed) {
+	if (combat.moveSpeed[move] !== speed) {
 		combat.moveSpeed[move] = speed;
 	}
 	return { break: false };
@@ -45,7 +47,7 @@ export function setMoveSpeed (combat, speed, move) {
 
 export function setMoveElement (combat, element, move) {
 	// TODO: moveElementChangedEmitter
-	if (!combat.moveElement[move] === element) {
+	if (combat.moveElement[move] !== element) {
 		combat.moveElement[move] = element;
 	}
 	return { break: false };
@@ -53,7 +55,7 @@ export function setMoveElement (combat, element, move) {
 
 export function applyMoveIgnoresStatus (combat, status, move) {
 	// TODO: moveGainedIgnoresStatusEmitter
-	if (!combat.moveIgnoresStatus[move][status]) {
+	if (combat.moveIgnoresStatus[move][status] !== true) {
 		combat.moveIgnoresStatus[move][status] = true;
 	}
 	return { break: false };
@@ -91,7 +93,7 @@ export function reduceMoveIterations (combat, amount, move) {
 }
 
 export function negateMoveIterations (combat, move) {
-	if (move.moveIterations[move] !== 0) {
+	if (combat.moveIterations[move] !== 0) {
 		combat.moveIterations[move] = 0;
 	}
 	return { break: false };
@@ -108,7 +110,7 @@ export function spendMoveIterations (combat, amount, move) {
 			return { break: false, spent: before };
 		}
 		default: {
-			reduceMoveIterations(combat, amount, move)
+			reduceMoveIterations(combat, amount, move);
 			const spent = Math.min(before, amount);
 			return { break: false, spent: spent};
 		}

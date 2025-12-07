@@ -23,14 +23,14 @@ export function negateCooldown (combat, move) {
 export function reduceCooldown (combat, turns, move) {
 	const before = combat.moveCooldownTurns[move];
 	if (turns > before) {
-		negateCooldown(combat, move);
+		return negateCooldown(combat, move);
 	}
 	combat.moveCooldownTurns[move] = Math.max(0, before - turns);
 	return { break: false };
 }
 
 export function extendCooldown (combat, turns, move) {
-	if (combat.moveCooldownTurn > 0) {
+	if (combat.moveCooldownTurns > 0) {
 		return applyCooldown(combat, turns, move);
 	}
 	return { break: false };
@@ -48,7 +48,8 @@ export function spendCooldown (combat, turns, move) {
 		}
 		default: {
 			reduceCooldown(combat, turns, move);
-			return { break: false, spent: before };
+			const spent = Math.min(before, turns);
+			return { break: false, spent: spent };
 		}
 	}
 }
