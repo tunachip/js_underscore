@@ -1,6 +1,6 @@
 // src/engine/operations/event.js
 
-import { Immunity, Status, Immunity, Damage, Utility } from '#engine/operations';
+import { Immunity, Status, Damage, Utility } from '#engine/operations';
 
 
 export function heal (combat, amount, who) {
@@ -55,5 +55,10 @@ export function attemptCurse (combat, who) {
 		return Status.apply(combat, 3, 'curse', who);
 	};
 	return { break: false };
+};
+
+export function skipTurn (combat, who) {
+	combat.turnsSkipped[who] += 1;
+	return { break: true };
 };
 

@@ -1,5 +1,7 @@
 # Project TODOs
 
+** 12/13/25 **
+- [ ] Fix Damage Operations File
 
 - [x] Refactor All Python Code
 

@@ -25,20 +25,20 @@ export function decay (combat, turns, who) {
 	return Damage.deal(combat, result.damage, who);
 };
 
-export function status (combat, status, who) {
+export function status (combat, turns, status, who) {
 	if (!combat.hasStatus[who][status]) {
 		return { break: false };
 	};
 	if (combat.ignoresStatus[who][status]) {
-		return Status.reduce(combat, 1, status, who);
+		return Status.reduce(combat, turns, status, who);
 	};
 	switch (status) {
-		case 'regen': { return regen(combat, 1, who); };
-		case 'burn':  {	return burn(combat, 1, who); };
-		case 'decay': { return decay(combat, 1, who); };
+		case 'regen': { return regen(combat, turns, who); };
+		case 'burn':  {	return burn(combat, turns, who); };
+		case 'decay': { return decay(combat, turns, who); };
 		case 'wound': { return { break: false }; };
 		default: {
-			return Status.reduce(combat, 1, status, who);
+			return Status.reduce(combat, turns, status, who);
 		};
 	};
 };

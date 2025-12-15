@@ -2,12 +2,14 @@
 // Text-input based combat loop (placeholder until UI/AI plug in).
 
 import { executeOperations } from './opcode_reader.js';
+
 import { resolveOperations, createInterpreterContext } from './interpreters.js';
 import { publicizeMove } from './operations/change_move_ops.js';
 import { reduceCooldown } from './operations/cooldown_ops.js';
 import { reduceStatus } from './operations/status_ops.js';
 import { tickStatus } from './operations/status_tickers.js';
 import { playerChoice } from './operations/var_setter_ops.js';
+
 
 // --- Audit helpers ---------------------------------------------------
 
@@ -44,11 +46,6 @@ function currentMoves (combat, scope, who) {
 		}
 	}
 	return moves;
-}
-
-function skipTurn (combat, who) {
-	combat.turnsSkipped[who] += 1;
-	return true;
 }
 
 function moveInvalid (combat, who) {
@@ -145,6 +142,7 @@ function executeMove (combat, move, who, targets) {
 function executeTurn (combat, who) {
 	const statuses  = auditStatuses(combat, who);
 	const cooldowns = auditCooldowns(combat, who);
+	
 	const damageBasedStatuses = ['regen', 'burn', 'decay'];
 	for (const status of damageBasedStatuses) {
 		if (combat.hasStatus[who][status]) {
@@ -154,6 +152,7 @@ function executeTurn (combat, who) {
 			}
 		}
 	}
+	
 	if (!moveInvalid(combat, who)) {
 		const choice = combat.moveChoice[who];
 		const move = choice.move;
@@ -163,12 +162,15 @@ function executeTurn (combat, who) {
 			return true;
 		}
 	}
+	
 	for (const move of cooldowns) {
 		reduceCooldown(combat, 1, move);
 	}
+	
 	for (const status of statuses) {
 		reduceStatus(combat, 1, status, who);
 	}
+	
 	return false;
 }
 
@@ -208,12 +210,16 @@ function resetSpeeds (combat, hadPriority) {
 export function combatLoop (combat) {
 	let hadPriority = 0;
 	calculateSpeeds(combat, hadPriority);
+
 	while (!combat.gameover) {
+		
 		for (let i = 0; i < combat.isAlive.length; i++) {
 			if (!combat.isAlive[i]) continue;
 			makeTurnDecisions(combat, i);
 		};
+		
 		const order = turnOrder(combat, hadPriority);
+		
 		for (const who of order) {
 			if (!combat.isAlive[who]) continue;
 			const ended = executeTurn(combat, who);
@@ -222,9 +228,14 @@ export function combatLoop (combat) {
 				break;
 			};
 		};
+		
 		hadPriority = resetSpeeds(combat, hadPriority);
+		
 		combat.turn += 1;
+	
 	};
+	
 	return combat;
+
 };
 

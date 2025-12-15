@@ -1,21 +1,7 @@
 // src/engine/operations/damage.js
 
-import { ELEMENTS, DAMAGE_RULES } from '../../constants.js';
+import { ELEMENTS, ELEM_CALC_RULES } from '../../constants.js';
 import { Attunement, Event } from '#engine/operations';
-
-/*
- *	damage --> props: element, base, attacker(optional), target
- *	
- *	-- DamageModStatuses --
- *	attacker status (strong)
- *	targets  status (tough)
- *	
- *	-- ElementRules --
- *	damageElement
- *		test against target.attunements
- *		modify per table entries
- *		output to different functions based on process state at end of calc
- */
 
 function applyDamageModifierStatuses(combat, damage, caster, target) {
   if (combat.hasStatus[caster]['strong']) { damage++; }
@@ -50,9 +36,6 @@ function applyElementalDamageModifiers(combat, element, target) {
   };
   return { damage: delta, healed: healed, spent: spent };
 };
-
-
-
 
 export function calculate(combat, element, damage, target) {
   if (damage < 1) {

@@ -40,6 +40,14 @@ function skipTurn (combat, who) {
 	return true;
 };
 
+function isInvalid (disqualifier, who) {
+if (combat.hasStatus[who][disqualifier] &&
+		combat.ignoresStatus[who][disqualifier] !== true &&
+		combat.moveIgnoresStatus[moveIndex][disqualifier] !== true) {
+		return true;
+	};
+};
+
 export function invalidMoveChoice (combat, who) {
 	const choice = combat.moveChoice[who];
 	if (choice < 0) {
@@ -47,27 +55,16 @@ export function invalidMoveChoice (combat, who) {
 		combat.turnsSkipped[who] += 1;
 		return true;
 	};
-	const moveIndex = choice.move;
-	if (combat.hasStatus[who]['sleep'] &&
-			combat.ignoresStatus[who]['sleep'] !== true &&
-			combat.moveIgnoresStatus[moveIndex]['sleep'] !== true) {
-			return skipTurn(combat, who);
-	};
-	// Move-type disqualifiers
-	if (combat.moveType[moveIndex] === 'attack') {
-		if (combat.hasStatus[who]['stun'] &&
-				combat.ignoresStatus[who]['stun'] !== true &&
-				combat.moveIgnoresStatus[moveIndex]['stun'] !== true) {
-			return skipTurn(combat, who);
+	
+	if (!isInvalid('sleep', who)) {
+		switch (choice) {
+			case 'attack':  {
+				return isInvalid('stun', who)
+			};
+			case 'utility': {
+				return isInvalid('anger', who)
+			};
 		};
 	};
-	if (combat.moveType[moveIndex] === 'utility') {
-		if (combat.hasStatus[who]['anger'] &&
-				combat.ignoresStatus[who]['anger'] !== true &&
-				combat.moveIgnoresStatus[moveIndex]['anger'] !== true) {
-			return skipTurn(combat, who);
-		};
-	};
-	return false;
 };
 
