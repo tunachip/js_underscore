@@ -1,0 +1,34 @@
+{
+	"entities": [
+		{
+			"name": "Jerry",
+			"career": "Engineer",
+			"religion": "Christian",
+			"inventory": [
+				"wrench",
+				"screwdriver",
+				"screws"
+			]
+		},
+		{
+			"name": "Candice",
+			"career": "Bartender",
+			"religion": "Atheist",
+			"inventory": [
+				"glass",
+				"knife",
+				"taser"
+			]
+		},
+		{
+			"name": "Bill",
+			"career": "Realtor",
+			"religion": "Jewish",
+			"inventory": [
+				"paperwork",
+				"keys",
+				"chewing gum"
+			]
+		}
+	]
+}

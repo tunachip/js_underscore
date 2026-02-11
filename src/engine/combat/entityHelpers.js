@@ -1,7 +1,6 @@
-// src/engine/combat/entity.js
+// src/engine/combat/entityHelpers.js
 
 import { ELEMENTS, STATUSES } from '../constants.js'
-
 
 export function currentMoves (combat, zone, who) {
 	const moves = combat.moveOwner;
@@ -13,6 +12,7 @@ export function currentMoves (combat, zone, who) {
 			};
 		};
 	};
+	return out;
 };
 
 export function currentStatuses (combat, who) {
@@ -35,7 +35,7 @@ export function currentAttunements (combat, who) {
 	return out;
 };
 
-function skipTurn (combat, who) {
+export function skipTurn (combat, who) {
 	combat.turnsSkipped[who] += 1;
 	return true;
 };

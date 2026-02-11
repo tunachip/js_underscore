@@ -13,8 +13,8 @@ export const ELEMENTS = [
 class damageRule {
 	constructor (m = 0, b = [], a = 0) {
 		this.modifier = m;
-		this.blocks = b;
-		this.absorbs = a;
+		this.blocks		= b;
+		this.absorbs  = a;
 	}
 };
 
